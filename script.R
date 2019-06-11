@@ -18,25 +18,28 @@ options = parse_args(OptionParser(option_list=option_list))
 
 gbm=Read10X(options$input) # Load gbm
 
-obj <- CreateSeuratObject(gbm) # Create object
+mito.genes <- grep(pattern = "^MT-", x = rownames(gbm), 
+                   value = F, ignore.case = T)
+percent.mito <- Matrix::colSums(gbm[mito.genes,])/Matrix::colSums(gbm)
 
-# mitochondrial genes start with 'mt-'
-mito.genes <- grep(pattern = "^MT-", x = rownames(x = obj@data), 
-                   value = TRUE, ignore.case = T)
-percent.mito <- Matrix::colSums(obj@raw.data[mito.genes,])/Matrix::colSums(obj@raw.data)
-obj_prefilter <- AddMetaData(obj, metadata = percent.mito, col.name = "percent.mito")
+# Remove mito from gbm
+gbm <- gbm[-mito.genes, ]
+
+# Create Seurat object, and add percent.mito to object@meta.data in the percent.mito column
+obj <- CreateSeuratObject(raw.data = gbm, 
+                          meta.data = data.frame(percent.mito = percent.mito))
 
 dir.create(options$output)
 setwd(options$output)
 
 pdf("prefilter_vln_nGene_nUMI_mito.pdf", width = 6, height = 4)
-VlnPlot(obj_prefilter, c("nGene", "nUMI", "percent.mito"),
+VlnPlot(obj, c("nGene", "nUMI", "percent.mito"),
         nCol = 3, group.by = "orig.ident",
         point.size.use = 0.02, size.x.use = 0)
 dev.off()
 
 # filter cells with percent.mito >20%
-obj <- FilterCells(obj_prefilter, subset.names = "percent.mito", 
+obj <- FilterCells(obj, subset.names = "percent.mito", 
                    low.thresholds = -Inf, high.thresholds = 0.2)
 
 # filter possible doublets
@@ -50,4 +53,13 @@ VlnPlot(obj, c("nGene", "nUMI", "percent.mito"),
         nCol = 3, group.by = "orig.ident",
         point.size.use = 0.02, size.x.use = 0)
 dev.off()
+
+# Normalize and scale
+obj <- NormalizeData(object = obj,
+                     normalization.method = "LogNormalize",
+                     scale.factor = 1e4)
+obj <- ScaleData(object = obj, vars.to.regress = c("nUMI", "percent.mito"))
+
+obj <- FindVariableGenes(obj, selection.method = "dispersion", top.genes = 2000)
+
 
