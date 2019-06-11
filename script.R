@@ -38,6 +38,8 @@ VlnPlot(obj, c("nGene", "nUMI", "percent.mito"),
         point.size.use = 0.02, size.x.use = 0)
 dev.off()
 
+saveRDS(obj, "prefilter.rds")
+
 # filter cells with percent.mito >20%
 obj <- FilterCells(obj, subset.names = "percent.mito", 
                    low.thresholds = -Inf, high.thresholds = 0.2)
@@ -54,6 +56,8 @@ VlnPlot(obj, c("nGene", "nUMI", "percent.mito"),
         point.size.use = 0.02, size.x.use = 0)
 dev.off()
 
+saveRDS(obj, "filtered.rds")
+
 # Normalize and scale
 obj <- NormalizeData(object = obj,
                      normalization.method = "LogNormalize",
@@ -62,4 +66,17 @@ obj <- ScaleData(object = obj, vars.to.regress = c("nUMI", "percent.mito"))
 
 obj <- FindVariableGenes(obj, selection.method = "dispersion", top.genes = 2000)
 
+saveRDS(obj, "scaled.rds")
+
+# Run PCA and tSNE for clustering cell types
+obj <- RunPCA(obj, pc.genes = obj@var.genes, pcs.compute = 30)
+
+pc_sdev <- GetDimReduction(obj, slot = "sdev")
+
+obj <- RunTSNE(obj, dims.use = 1:max(which(pc_sdev >= 2)))
+
+pdf("tsne.pdf", width = 6, height = 6)
+TSNEPlot(obj,
+         plot.title = paste("dim.use: top", max(which(pc_sdev >= 2)), sep = " "))
+dev.off()
 
