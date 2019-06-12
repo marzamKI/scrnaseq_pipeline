@@ -76,7 +76,12 @@ pc_sdev <- GetDimReduction(obj, slot = "sdev")
 obj <- RunTSNE(obj, dims.use = 1:max(which(pc_sdev >= 2)))
 
 pdf("tsne.pdf", width = 6, height = 6)
-TSNEPlot(obj,
+TSNEPlot(obj, no.legend = T,
          plot.title = paste("dim.use: top", max(which(pc_sdev >= 2)), sep = " "))
 dev.off()
 
+saveRDS(obj, "tsne.rds")
+
+obj <- RunUMAP(obj, dims.use = 1:max(which(pc_sdev >= 2)))
+DimPlot(obj, no.legend = T, reduction.use = "umap",
+         plot.title = paste("dim.use: top", max(which(pc_sdev >= 2)), sep = " "))
