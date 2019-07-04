@@ -22,9 +22,6 @@ mito.genes <- grep(pattern = "^MT-", x = rownames(gbm),
                    value = F, ignore.case = T)
 percent.mito <- Matrix::colSums(gbm[mito.genes,])/Matrix::colSums(gbm)
 
-# Remove mito from gbm
-gbm <- gbm[-mito.genes, ]
-
 # Create Seurat object, and add percent.mito to object@meta.data in the percent.mito column
 obj <- CreateSeuratObject(raw.data = gbm, 
                           meta.data = data.frame(percent.mito = percent.mito))
@@ -40,14 +37,21 @@ dev.off()
 
 saveRDS(obj, "prefilter.rds")
 
+print(paste("Filtered", 
+            length(which(obj@meta.data$percent.mito > 0.2)), 
+            "cells with mitochondrial content > 20%"))
+
 # filter cells with percent.mito >20%
 obj <- FilterCells(obj, subset.names = "percent.mito", 
                    low.thresholds = -Inf, high.thresholds = 0.2)
 
-# filter possible doublets
+# filter possible doublets based on gene number
 outlier.ngene <- mean(obj@meta.data$nGene) + 3*sd(obj@meta.data$nGene)
 obj <- FilterCells(obj, subset.names = "nGene", 
                    low.thresholds = -Inf, high.thresholds = outlier.ngene)
+print(paste("Filtered",
+            length(which(obj@meta.data$nGene > outlier.ngene)),
+            "cells with nGene > 3*sd"))
 
 # plot after filtering of low quality cells and doublets
 pdf("postfilter_vln_nGene_nUMI_mito.pdf", width = 6, height = 4)
