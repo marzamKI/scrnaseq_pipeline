@@ -10,7 +10,9 @@ option_list = list(
               matrix.mtx, genes.tsv, and barcodes.tsv files. 
               Make sure files are unzipped."),
   make_option(c("-o", "--output"), default = "directory",
-              help = "Specify output directory for storing plots and tables.")
+              help = "Specify output directory for storing plots and tables."),
+  make_option(c("-g", "--genes"), default = NA, type = "path",
+              help = "(Optional) Specify path to a .csv file listing genes ")
   )
 
 options = parse_args(OptionParser(option_list=option_list), positional_arguments = F)
@@ -124,6 +126,17 @@ pdf("tsne.pdf", width = 12, height = 16)
 plot_grid(plotlist = res_plots, ncol = 3)
 dev.off()
 
-obj.markers <- FindAllMarkers(obj, only.pos = TRUE, min.pct = 0.25, logfc.threshold = 0.25)
-obj.markers %>% group_by(cluster) %>% top_n(n = 5, wt = avg_logFC)
-write.csv(obj.markers, "ClusterMarkers.csv")
+if (!is.na(options$genes)) {
+  file <- read.csv("genes.csv", header = T, stringsAsFactors = F)
+  genes <- file[,1]
+  pdf("FeaturePlot.pdf", width = 5, height = 5, paper = 'special')
+  for (i in 1:length(x = genes)) {
+    FeaturePlot(obj, features.plot = genes[[i]], reduction.use = "tsne")}
+  dev.off()
+} else {
+  print("No list of genes was provided for FeaturePlot() function")
+}
+
+
+
+
