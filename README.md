@@ -25,9 +25,62 @@ In order to use this pipeline you will need to download the repo to your local a
 ```
 cd /path/to/repo 
 ```
+## Overview
+The pipeline is composed of two executable R scripts:
+- **explore.R** Performs all the exploratory analysis (from loading the gene-expression matrix to tSNE and clustering).
+- **cluster.R** Performs differential expression analysis based on the selected resolution used for clustering.
+
+See arguments to be used with each of the scripts:
+
+```
+Rscript explore.R -h
+
+Usage: explore.R [options]
+
+
+Options:
+        -i INPUT, --input=INPUT
+                Set the path to the directory containing
+              matrix.mtx, genes.tsv, and barcodes.tsv files.
+              Make sure files are unzipped.
+
+        -o OUTPUT, --output=OUTPUT
+                Specify output directory for storing plots and tables.
+
+        -g GENES, --genes=GENES
+                (Optional) Specify path to a .csv file listing genes
+
+        -h, --help
+                Show this help message and exit
+
+
+Rscript cluster.R
+
+Usage: cluster.R [options]
+
+
+Options:
+	-i INPUT, --input=INPUT
+		Set the path to the R objects previously saved.
+
+	-r RESOLUTION, --resolution=RESOLUTION
+		Set the resolution for the clustering algorithm (i.e., from 0.1 to 1
+
+	-o OUTPUT, --output=OUTPUT
+		(Optional) Specify output directory for storing plots and tables.
+
+	-g GENES, --genes=GENES
+		(Optional) Specify path to a .csv file listing genes 
+
+	-h, --help
+		Show this help message and exit
+
+```
+
 
 ## Prerequisites
 - Install the latest [R](https://www.r-project.org/) (I have used R v3.6.0)
 - Packages needed for running the pipeline will automatically be installed, if not already present. If Seurat is already installed, make sure to upgrate to version >= 3.0.0.
-- Input option requires the gene-expression files from CellRanger to be unzipped (e.g., `gunzip path/to/files/*.gz` and named as: **barcodes.tsv, genes.tsv, matrix.mtx**
+- Input option requires the gene-expression files from CellRanger to be unzipped (e.g., `gunzip path/to/files/*.gz` and named as: **barcodes.tsv, genes.tsv, matrix.mtx**.
+
 
