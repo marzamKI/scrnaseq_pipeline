@@ -18,7 +18,7 @@ option_list = list(
               Make sure files are unzipped."),
   make_option(c("-o", "--output"), default = "directory",
               help = "Specify output directory for storing plots and tables."),
-  make_option(c("-g", "--genes"), default = NA, type = "path",
+  make_option(c("-g", "--genes"), default = NA, type = "character",
               help = "(Optional) Specify path to a .csv file listing genes ")
   )
 
