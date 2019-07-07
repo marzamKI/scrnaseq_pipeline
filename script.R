@@ -1,6 +1,13 @@
 #!/usr/bin/env Rscript
 options(warn=-1)
 
+if (!requireNamespace("Seurat", quietly = TRUE))
+  install.packages("Seurat")
+if (!requireNamespace("optparse", quietly = TRUE))
+  install.packages("optparse")
+if (!requireNamespace("cowplot", quietly = TRUE))
+  install.packages("cowplot")
+
 suppressPackageStartupMessages(require(optparse))
 
 # Parse arguments
@@ -21,13 +28,9 @@ options = parse_args(OptionParser(option_list=option_list), positional_arguments
 print("Loading packages")
 suppressPackageStartupMessages(require(Seurat))
 suppressPackageStartupMessages(require(cowplot))
-suppressPackageStartupMessages(require(tidyverse))
 
 print("Loading gene expression matrix and creating Seurat object")
 gbm=Read10X(options$input) # Load gbm
-
-
-
 
 # Create Seurat object, and add percent.mito to object@meta.data in the percent.mito column
 obj <- CreateSeuratObject(gbm, min.features = 200)
@@ -35,6 +38,7 @@ obj[["percent.mt"]] <- PercentageFeatureSet(obj, pattern = "^MT-")
 
 dir.create(options$output)
 setwd(options$output)
+print(paste("Saving output in ", getwd(), sep = ""))
 
 prefilter <- VlnPlot(obj, c("nFeature_RNA", "nCount_RNA", "percent.mt"),
                           ncol = 3, pt.size = 0.2) 

@@ -21,7 +21,6 @@ options = parse_args(OptionParser(option_list=option_list), positional_arguments
 print("Loading packages")
 suppressPackageStartupMessages(require(Seurat))
 suppressPackageStartupMessages(require(cowplot))
-suppressPackageStartupMessages(require(tidyverse))
 
 if (!is.na(options$genes)) {
   file <- read.csv("genes.csv", header = T, stringsAsFactors = F)
@@ -61,3 +60,4 @@ if (!is.na(options$resolution)) {
 } else {
   print("Provide clustering resolution to run differential expression analysis")
 }
+
