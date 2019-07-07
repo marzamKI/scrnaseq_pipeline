@@ -30,11 +30,14 @@ The pipeline is composed of two executable R scripts:
 - **explore.R** Performs all the exploratory analysis (from loading the gene-expression matrix to tSNE and clustering).
 - **cluster.R** Performs differential expression analysis based on the selected resolution used for clustering.
 
-See arguments to be used with each of the scripts:
+Use `-h` to see arguments to be passed with each of the scripts:
+
 
 ```
 Rscript explore.R -h
+```
 
+```
 Usage: explore.R [options]
 
 
@@ -53,9 +56,22 @@ Options:
         -h, --help
                 Show this help message and exit
 
+```
+Specify `-o path/to/out` to create an `out` directory where all plots will be saved.
+When `-g genes.csv` is added, the script returns a .pdf file displaying gene expression levels on a tSNE embedding. Gene lists should be saved as a one-column .csv file. E.g.:
 
+```
+gene
+ASCL1
+DCX
+MKI67
+```
+
+```
 Rscript cluster.R
+```
 
+```
 Usage: cluster.R [options]
 
 
@@ -76,7 +92,8 @@ Options:
 		Show this help message and exit
 
 ```
-
+Use `-o`to save output files from **cluster.R** in a new directory. If not specified, files will be saved in the `
+out` directory created while running **explore.R**.
 
 ## Prerequisites
 - Install the latest [R](https://www.r-project.org/) (I have used R v3.6.0)
