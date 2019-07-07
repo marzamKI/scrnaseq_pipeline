@@ -26,4 +26,8 @@ In order to use this pipeline you will need to download the repo to your local a
 cd /path/to/repo 
 ```
 
+## Prerequisites
+- Install the latest [R](https://www.r-project.org/) (I have used R v3.6.0)
+- Packages needed for running the pipeline will automatically be installed, if not already present. If Seurat is already installed, make sure to upgrate to version >= 3.0.0.
+- Input option requires the gene-expression files from CellRanger to be unzipped (e.g., `gunzip path/to/files/*.gz` and named as: **barcodes.tsv, genes.tsv, matrix.mtx**
 
