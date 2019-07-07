@@ -49,7 +49,7 @@ if (!is.na(options$genes)) {
     print(FeaturePlot(obj, features = genes[[i]]))}
   dev.off()
 } else {
-  print("No list of genes was provided for FeaturePlot() function")
+  print("")
 }
 
 # DEA

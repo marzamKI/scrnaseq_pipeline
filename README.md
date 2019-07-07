@@ -9,10 +9,21 @@ The workflow uses Seurat (v3.0.2) and performs all necessary steps for an basic 
 - clustering (using different resolutions), 
 - and differential expression analysis.
 
-Seurat offers a wide variety of functions and tutorials that allow you to perform exhaustive exploration of your scRNA-seq dataset. For this reason, the present pipeline is essentially following the same workflow provided by Satija lab ([Seurat - Getting Started](https://satijalab.org/seurat/v3.0/pbmc3k_tutorial.html)
+Seurat offers a wide variety of functions and tutorials that allow you to perform exhaustive exploration of your scRNA-seq dataset. For this reason, the present pipeline is essentially following the same workflow provided by Satija lab ([Seurat - Getting Started](https://satijalab.org/seurat/v3.0/pbmc3k_tutorial.html))
 
 The advantage of this pipeline is that it allows for automatised exploratory analysis of your data, using a one-liner on the CLI. 
 
-??????
+```
 Rscript script.R -i path/to/input -o path/to/output 
-??????
+```
+
+In order to use this pipeline you will need to download the repo to your local and set your working directory.
+- Click on **Clone or Download**
+- Download ZIP
+- Change working directory
+
+```
+cd /path/to/repo 
+```
+
+
