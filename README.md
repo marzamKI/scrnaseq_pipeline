@@ -30,12 +30,7 @@ The pipeline is composed of two executable R scripts:
 - **explore.R** Performs all the exploratory analysis (from loading the gene-expression matrix to tSNE and clustering).
 - **cluster.R** Performs differential expression analysis based on the selected resolution used for clustering.
 
-Use `-h` to see arguments to be passed with each of the scripts:
-
-
-```
-Rscript explore.R -h
-```
+Run `Rscript explore.R -h` to see arguments to be passed with the **explore.R** script:
 
 ```
 Usage: explore.R [options]
@@ -67,9 +62,7 @@ DCX
 MKI67
 ```
 
-```
-Rscript cluster.R
-```
+Run `Rscript cluster.R -h` to see arguments to be passed with the **cluster.R** script:
 
 ```
 Usage: cluster.R [options]
@@ -100,4 +93,26 @@ out` directory created while running **explore.R**.
 - Packages needed for running the pipeline will automatically be installed, if not already present. If Seurat is already installed, make sure to upgrate to version >= 3.0.0.
 - Input option requires the gene-expression files from CellRanger to be unzipped (e.g., `gunzip path/to/files/*.gz` and named as: **barcodes.tsv, genes.tsv, matrix.mtx**.
 
+## Output 
+Output files for **explore.R** include:
+- Exploratory plots: 
+	- **PrePostFilterVln.pdf**
+	- **HVG.pdf**
+	- **tsne.pdf**
+- Seurat objects:
+	- **prefilter.rds**
+	- **filtered.rds**
+	- **scaled.rds**
+	- **tsne.rds**
+- (Optional) Feature plots (**FeaturePlot.pdf**).
+
+Output files for **cluster.R** include:
+- (Optional) Feature plots (**FeaturePlot.pdf**)
+- List of cluster markers (**ClusterMarkers.csv**)
+
+## Progress
+Use ` > log.txt 2>&1` to build a progress report. E.g., 
+
+```
+Rscript cluster.R -i outs/ -g genes.csv > log.txt 2>&1
 
