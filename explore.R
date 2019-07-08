@@ -20,7 +20,7 @@ option_list = list(
               help = "Specify output directory for storing plots and tables."),
   make_option(c("-g", "--genes"), default = NA, type = "character",
               help = "(Optional) Specify path to a .csv file listing genes ")
-  )
+)
 
 options = parse_args(OptionParser(option_list=option_list), positional_arguments = F)
 
@@ -41,7 +41,7 @@ setwd(options$output)
 print(paste("Saving output in ", getwd(), sep = ""))
 
 prefilter <- VlnPlot(obj, c("nFeature_RNA", "nCount_RNA", "percent.mt"),
-                          ncol = 3, pt.size = 0.2) 
+                     ncol = 3, pt.size = 0.2) 
 
 saveRDS(obj, "prefilter.rds")
 
