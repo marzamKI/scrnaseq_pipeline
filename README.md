@@ -53,7 +53,7 @@ Options:
 
 ```
 Specify `-o path/to/out` to create an `out` directory where all plots will be saved.
-When `-g genes.csv` is added, the script returns a .pdf file displaying gene expression levels on a tSNE embedding. Gene lists should be saved as a one-column .csv file. E.g.:
+When `-g genes.csv` is added, the script returns a .pdf file displaying gene expression levels on a tSNE embedding. Gene lists should be saved in the repo directory, as a one-column .csv file. E.g.:
 
 ```
 gene
@@ -114,5 +114,5 @@ Output files for **cluster.R** include:
 Use ` > log.txt 2>&1` to build a progress report. E.g., 
 
 ```
-Rscript cluster.R -i outs/ -g genes.csv > log.txt 2>&1
+Rscript cluster.R -i path/to/input -g genes.csv > log.txt 2>&1
 
