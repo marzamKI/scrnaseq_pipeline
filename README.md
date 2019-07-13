@@ -37,19 +37,23 @@ Usage: explore.R [options]
 
 
 Options:
-        -i INPUT, --input=INPUT
-                Set the path to the directory containing
-              matrix.mtx, genes.tsv, and barcodes.tsv files.
-              Make sure files are unzipped.
+	-i INPUT, --input=INPUT
+		Set the path to the directory containing
+              matrix.mtx, genes.tsv, and barcodes.tsv files. 
+              Make sure files are unzipped
 
-        -o OUTPUT, --output=OUTPUT
-                Specify output directory for storing plots and tables.
+	-o OUTPUT, --output=OUTPUT
+		Specify output directory for storing plots and tables
 
-        -g GENES, --genes=GENES
-                (Optional) Specify path to a .csv file listing genes
+	-g GENES, --genes=GENES
+		(Optional) Specify path to a .csv file listing genes
 
-        -h, --help
-                Show this help message and exit
+	-c CELLCYCLE, --cellcycle=CELLCYCLE
+		(Optional) If TRUE, calculates cell cycle score using 
+              S- and G2M-related genes
+
+	-h, --help
+		Show this help message and exit
 
 ```
 Specify `-o path/to/out` to create an `out` directory where all plots will be saved.
@@ -99,6 +103,11 @@ Output files for **explore.R** include:
 	- **PrePostFilterVln.pdf**
 	- **HVG.pdf**
 	- **tsne.pdf**
+	- **CellCycleScore.pdf**
+- Exploratory tables:
+	- **PCACellEmbeddings.csv**
+	- **PCAFeatureLoadings.csv**
+	- **tSNECellEmbeddings.csv**
 - Seurat objects:
 	- **prefilter.rds**
 	- **filtered.rds**
@@ -109,6 +118,8 @@ Output files for **explore.R** include:
 Output files for **cluster.R** include:
 - (Optional) Feature plots (**FeaturePlot.pdf**)
 - List of cluster markers (**ClusterMarkers.csv**)
+- Top 20 cluster markers (**Top20ClusterMarkers.csv**)
+- Heatmap with the top 20 features per cluster (**Top20MarkerHM.pdf**)
 
 ## Progress
 Use ` > log.txt 2>&1` to build a progress report. E.g., 
