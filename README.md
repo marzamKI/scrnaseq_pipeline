@@ -1,4 +1,4 @@
-# rnaseq_pipeline
+# scrnaseq_pipeline
 
 This is a complete pipeline for analysing scRNA-seq datasets from 10x Genomics.
 
