@@ -21,8 +21,8 @@ option_list = list(
   make_option(c("-g", "--genes"), default = NA, type = "character",
               help = "(Optional) Specify path to a .csv file listing genes"),
   make_option(c("-c", "--cellcycle"), default = NA, type = "character",
-              help = "(Optional) Supply list of genes implicated in cell division to
-              calculate cell cycle score. Download list at http://")
+              help = "(Optional) If TRUE, calculates cell cycle score using 
+              S- and G2M-related genes")
 )
 
 options = parse_args(OptionParser(option_list=option_list), positional_arguments = F)
