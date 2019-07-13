@@ -15,14 +15,18 @@ option_list = list(
   make_option(c("-i", "--input"), default = "path",
               help = "Set the path to the directory containing
               matrix.mtx, genes.tsv, and barcodes.tsv files. 
-              Make sure files are unzipped."),
+              Make sure files are unzipped"),
   make_option(c("-o", "--output"), default = "directory",
-              help = "Specify output directory for storing plots and tables."),
+              help = "Specify output directory for storing plots and tables"),
   make_option(c("-g", "--genes"), default = NA, type = "character",
-              help = "(Optional) Specify path to a .csv file listing genes ")
+              help = "(Optional) Specify path to a .csv file listing genes"),
+  make_option(c("-c", "--cellcycle"), default = NA, type = "character",
+              help = "(Optional) Supply list of genes implicated in cell division to
+              calculate cell cycle score. Download list at http://")
 )
 
 options = parse_args(OptionParser(option_list=option_list), positional_arguments = F)
+
 
 # Load packages & color palettes
 print("Loading packages")
@@ -63,7 +67,7 @@ postfilter <- VlnPlot(obj, c("nFeature_RNA", "nCount_RNA", "percent.mt"),
                       ncol = 3, pt.size = 0.2) 
 
 # plot after filtering of low quality cells and doublets
-pdf("PrePostFilterVln.pdf", width = 6, height = 4)
+pdf("PrePostFilterVln.pdf", width = 6, height = 9)
 plot_grid(prefilter, postfilter, ncol = 1)
 dev.off()
 
@@ -95,6 +99,9 @@ saveRDS(obj, "scaled.rds")
 
 print("Performing dimensionality reduction")
 obj <- RunPCA(obj, features = VariableFeatures(object = obj))
+
+write.csv(obj@reductions$pca@feature.loadings, "PCAFeatureLoadings.csv")
+write.csv(obj@reductions$pca@cell.embeddings, "PCACellEmbeddings.csv")
 
 obj <- JackStraw(obj, num.replicate = 100)
 obj <- ScoreJackStraw(obj, dims = 1:20)
@@ -130,17 +137,28 @@ pdf("tsne.pdf", width = 12, height = 16)
 plot_grid(plotlist = res_plots, ncol = 3)
 dev.off()
 
+write.csv(obj@reductions$tsne@cell.embeddings, "tSNECellEmbeddings.csv")
+
 if (!is.na(options$genes)) {
   file <- read.csv("genes.csv", header = T, stringsAsFactors = F)
   genes <- file[,1]
-  pdf("FeaturePlot.pdf", width = 5, height = 5, paper = 'special')
+  pdf("FeaturePlot.pdf", paper = 'special')
   for (i in 1:length(x = genes)) {
-    FeaturePlot(obj, features.plot = genes[[i]], reduction.use = "tsne")}
+    print(FeaturePlot(obj, features = genes[[i]]))}
   dev.off()
 } else {
   print("No list of genes was provided for FeaturePlot() function")
 }
 
+### Cell cycle
 
-
+if(!is.na(options$cellcycle)) { 
+  print("Scoring cell cycle module activity")
+  s.genes <- cc.genes$s.genes
+  g2m.genes <- cc.genes$g2m.genes
+  obj <- CellCycleScoring(obj, s.features = s.genes, g2m.features = g2m.genes, set.ident = F)
+  pdf("CellCycleScore.pdf", paper = 'special', width = 9, height = 4)
+  print(FeaturePlot(obj, features = c("S.Score", "G2M.Score")))
+  dev.off()
+}
 

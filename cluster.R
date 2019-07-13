@@ -26,7 +26,6 @@ suppressPackageStartupMessages(require(Seurat))
 suppressPackageStartupMessages(require(cowplot))
 suppressPackageStartupMessages(require(tidyverse))
 
-
 if (!is.na(options$genes)) {
   file <- read.csv("genes.csv", header = T, stringsAsFactors = F)
   genes <- file[,1]
@@ -49,9 +48,10 @@ print(paste("Saving data in",
 
 if (!is.na(options$genes)) {
   pdf("FeaturePlot.pdf", paper = 'special')
-  features <- genes[[1]]
   for (i in 1:length(x = genes)) {
-    print(FeaturePlot(obj, features = genes[[i]]))}
+    print(FeaturePlot(obj, features = genes[[i]])
+    )
+  }
   dev.off()
 }
 
