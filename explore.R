@@ -31,6 +31,7 @@ options = parse_args(OptionParser(option_list=option_list), positional_arguments
 # Load packages & color palettes
 print("Loading packages")
 suppressPackageStartupMessages(require(Seurat))
+suppressPackageStartupMessages(require(ggplot2))
 suppressPackageStartupMessages(require(cowplot))
 
 print("Loading gene expression matrix and creating Seurat object")
@@ -97,6 +98,7 @@ obj <- SCTransform(obj, vars.to.regress = c("nFeature_RNA","percent.mt"), verbos
 
 saveRDS(obj, "scaled.rds")
 
+# Run PCA
 print("Performing dimensionality reduction")
 obj <- RunPCA(obj, features = VariableFeatures(object = obj))
 
@@ -110,6 +112,7 @@ print("Jackstraw was used to calculate p-value of the top 20 PCs. See below")
 JS_pvalue <- as.data.frame(JS(object = obj[['pca']], slot = 'overall'))
 print(JS_pvalue)
 
+# Run clustering analysis
 print("Significant PCs are used for subsequent tSNE and clustering analyses")
 sig_dims <- which(JS_pvalue$Score < 0.05)
 obj <- FindNeighbors(obj, dims = sig_dims)
@@ -120,7 +123,8 @@ for(res in c((1:10)/10)){
   obj <- FindClusters(obj, resolution = res)
 }
 
-obj <- RunTSNE(obj, dims = sig_dims)
+# Run tSNE
+obj <- RunTSNE(obj, dims = sig_dims, check_duplicates = F)
 
 saveRDS(obj, "tsne.rds")
 
@@ -133,11 +137,32 @@ for(res in resolutions){
     theme(legend.position = "none")
 }
 
-pdf("tsne.pdf", width = 12, height = 16)
+pdf("tSNEPlot.pdf", width = 12, height = 16)
 plot_grid(plotlist = res_plots, ncol = 3)
 dev.off()
 
 write.csv(obj@reductions$tsne@cell.embeddings, "tSNECellEmbeddings.csv")
+
+# Run UMAP
+obj <- RunUMAP(obj, dims = sig_dims)
+
+saveRDS(obj, "umap.rds")
+
+resolutions <- paste("SCT_snn_res.", (1:10)/10, sep="")
+res_plots <- list()
+for(res in resolutions){
+  res_plots[[res]]<-DimPlot(obj, reduction = "umap", label = T, label.size = 6, group.by = res) +
+    ggtitle(paste("dim.use:", max(which(JS_pvalue$Score < 0.05)), 
+                  "res:", res, sep = " ")) +
+    theme(legend.position = "none")
+}
+
+pdf("UMAPPlot.pdf", width = 12, height = 16)
+plot_grid(plotlist = res_plots, ncol = 3)
+dev.off()
+
+write.csv(obj@reductions$umap@cell.embeddings, "UMAPCellEmbeddings.csv")
+
 
 if (!is.na(options$genes)) {
   file <- read.csv("genes.csv", header = T, stringsAsFactors = F)
