@@ -5,7 +5,7 @@ This is a complete pipeline for analysing scRNA-seq datasets from 10x Genomics.
 The workflow uses Seurat (v3.0.2) and performs all necessary steps for an basic exploratory analysis of your data. These include:
 - normalization and scaling of gene-expression matrix, 
 - filtering of low quality cells and outliers, 
-- dimensionality reduction (PCA and TSNE), 
+- dimensionality reduction (PCA, TSNE, and UMAP), 
 - clustering (using different resolutions), 
 - and differential expression analysis.
 
@@ -27,7 +27,7 @@ cd /path/to/repo
 ```
 ## Overview
 The pipeline is composed of two executable R scripts:
-- **explore.R** Performs all the exploratory analysis (from loading the gene-expression matrix to tSNE and clustering).
+- **explore.R** Performs all the exploratory analysis (from loading the gene-expression matrix to UMAP and clustering).
 - **cluster.R** Performs differential expression analysis based on the selected resolution used for clustering.
 
 Run `Rscript explore.R -h` to see arguments to be passed with the **explore.R** script:
@@ -57,7 +57,7 @@ Options:
 
 ```
 Specify `-o path/to/out` to create an `out` directory where all plots will be saved.
-When `-g genes.csv` is added, the script returns a .pdf file displaying gene expression levels on a tSNE embedding. Gene lists should be saved in the repo directory, as a one-column .csv file. E.g.:
+When `-g genes.csv` is added, the script returns a .pdf file displaying gene expression levels on a UMAP embedding. Gene lists should be saved in the repo directory, as a one-column .csv file. E.g.:
 
 ```
 gene
@@ -102,12 +102,14 @@ Output files for **explore.R** include:
 - Exploratory plots: 
 	- **PrePostFilterVln.pdf**
 	- **HVG.pdf**
-	- **tsne.pdf**
+	- **tSNEPlot.pdf**
+	- **UMAPPlot.pdf**
 	- **CellCycleScore.pdf**
 - Exploratory tables:
 	- **PCACellEmbeddings.csv**
 	- **PCAFeatureLoadings.csv**
 	- **tSNECellEmbeddings.csv**
+	- **UMAPCellEmbeddings.csv**
 - Seurat objects:
 	- **prefilter.rds**
 	- **filtered.rds**
@@ -122,8 +124,8 @@ Output files for **cluster.R** include:
 - Heatmap with the top 20 features per cluster (**Top20MarkerHM.pdf**)
 
 ## Progress
-Use ` > log.txt 2>&1` to build a progress report. E.g., 
+Use ` > progress.log 2>&1` to build a progress report. E.g., 
 
 ```
-Rscript cluster.R -i path/to/input -g genes.csv > log.txt 2>&1
+Rscript cluster.R -i path/to/input -g genes.csv > progress.log 2>&1
 
