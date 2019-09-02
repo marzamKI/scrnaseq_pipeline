@@ -174,7 +174,7 @@ if (!is.na(options$genes)) {
   genes <- file[,1]
   pdf("FeaturePlot.pdf", paper = 'special')
   for (i in 1:length(x = genes)) {
-    print(FeaturePlot(obj, features = genes[[i]]))}
+    print(FeaturePlot(obj, reduction = "umap", features = genes[[i]]))}
   dev.off()
 } else {
   print("No list of genes was provided for FeaturePlot() function")
@@ -188,7 +188,7 @@ if(!is.na(options$cellcycle)) {
   g2m.genes <- cc.genes$g2m.genes
   obj <- CellCycleScoring(obj, s.features = s.genes, g2m.features = g2m.genes, set.ident = F)
   pdf("CellCycleScore.pdf", paper = 'special', width = 9, height = 4)
-  print(FeaturePlot(obj, features = c("S.Score", "G2M.Score")))
+  print(FeaturePlot(obj, reduction = "umap", features = c("S.Score", "G2M.Score")))
   dev.off()
 }
 
