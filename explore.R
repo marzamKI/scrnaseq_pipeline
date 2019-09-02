@@ -74,6 +74,11 @@ dev.off()
 
 saveRDS(obj, "filtered.rds")
 
+print(paste("Total number of cells to be analysed:",
+      ncol(obj@assays$RNA)
+      )
+)
+
 # Normalize and scale
 print("Log-normalizing data and looking for HVGs")
 obj <- NormalizeData(object = obj,
