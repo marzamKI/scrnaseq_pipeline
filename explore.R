@@ -110,16 +110,11 @@ obj <- RunPCA(obj, features = VariableFeatures(object = obj))
 write.csv(obj@reductions$pca@feature.loadings, "PCAFeatureLoadings.csv")
 write.csv(obj@reductions$pca@cell.embeddings, "PCACellEmbeddings.csv")
 
-obj <- JackStraw(obj, num.replicate = 100)
-obj <- ScoreJackStraw(obj, dims = 1:20)
-
-print("Jackstraw was used to calculate p-value of the top 20 PCs. See below")
-JS_pvalue <- as.data.frame(JS(object = obj[['pca']], slot = 'overall'))
-print(JS_pvalue)
+print("The top PCs explaining > 3SD of variation were used for subsequent dimensionality reduction")
 
 # Run clustering analysis
 print("Significant PCs are used for subsequent tSNE and clustering analyses")
-sig_dims <- which(JS_pvalue$Score < 0.05)
+sig_dims <- which(obj@reductions$pca@stdev > 3)
 obj <- FindNeighbors(obj, dims = sig_dims)
 
 print("Running clustering analysis at resolutions 0.1 to 1")
